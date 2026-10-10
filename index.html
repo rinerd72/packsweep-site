@@ -1,0 +1,1208 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PackSweep | Family Packing Lists for iPhone, iPad, and Mac</title>
+  <meta name="description" content="A family packing app that knows a baby is not a small adult. PackSweep packs each traveler by age, gender, and care needs—iCloud sync, free to start, Pro is a one-time 99¢. Never a subscription.">
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #112f29;
+      --muted: #52645e;
+      --paper: #fffdf8;
+      --surface: #ffffff;
+      --soft: #f4f8f1;
+      --green: #2f6f58;
+      --green-dark: #1e4f3f;
+      --blue: #0c4a6e;
+      --sky: #e7f5fb;
+      --amber: #c86f23;
+      --amber-dark: #984d14;
+      --line: #dce7df;
+      --shadow: 0 24px 70px rgba(28, 69, 55, 0.16);
+      --radius: 24px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background: var(--paper);
+      line-height: 1.6;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    a:focus-visible,
+    button:focus-visible {
+      outline: 3px solid rgba(200, 111, 35, 0.42);
+      outline-offset: 4px;
+      border-radius: 12px;
+    }
+
+    .skip-link {
+      position: absolute;
+      left: 1rem;
+      top: -4rem;
+      z-index: 20;
+      padding: 0.75rem 1rem;
+      color: #ffffff;
+      background: var(--green-dark);
+      border-radius: 999px;
+      transition: top 180ms ease;
+    }
+
+    .skip-link:focus {
+      top: 1rem;
+    }
+
+    .wrap {
+      width: min(1180px, calc(100% - 2rem));
+      margin: 0 auto;
+    }
+
+    .nav-shell {
+      position: fixed;
+      top: 1rem;
+      left: 1rem;
+      right: 1rem;
+      z-index: 10;
+      pointer-events: none;
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      width: min(1180px, 100%);
+      margin: 0 auto;
+      padding: 0.65rem;
+      background: rgba(255, 253, 248, 0.88);
+      border: 1px solid rgba(220, 231, 223, 0.9);
+      border-radius: 999px;
+      box-shadow: 0 16px 45px rgba(28, 69, 55, 0.13);
+      backdrop-filter: blur(16px);
+      pointer-events: auto;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.7rem;
+      min-height: 44px;
+      padding-left: 0.4rem;
+      color: var(--ink);
+      font-weight: 850;
+      text-decoration: none;
+    }
+
+    .brand-mark {
+      display: grid;
+      place-items: center;
+      width: 42px;
+      height: 42px;
+      color: #ffffff;
+      background: var(--green);
+      border-radius: 14px;
+      box-shadow: 0 10px 28px rgba(47, 111, 88, 0.28);
+    }
+
+    .brand-mark svg,
+    .icon svg {
+      width: 23px;
+      height: 23px;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+    }
+
+    .nav-link,
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      min-height: 44px;
+      padding: 0 1rem;
+      font-weight: 800;
+      text-decoration: none;
+      border-radius: 999px;
+      transition: color 180ms ease, background 180ms ease, border-color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
+      cursor: pointer;
+    }
+
+    .nav-link {
+      color: var(--muted);
+    }
+
+    .nav-link:hover {
+      color: var(--green-dark);
+      background: var(--soft);
+    }
+
+    .button {
+      color: #ffffff;
+      background: var(--green);
+      border: 1px solid var(--green);
+      box-shadow: 0 12px 28px rgba(47, 111, 88, 0.24);
+    }
+
+    .button:hover {
+      background: var(--green-dark);
+      border-color: var(--green-dark);
+      transform: translateY(-1px);
+      box-shadow: 0 18px 38px rgba(47, 111, 88, 0.3);
+    }
+
+    .button.secondary {
+      color: var(--green-dark);
+      background: rgba(255, 255, 255, 0.82);
+      border-color: var(--line);
+      box-shadow: none;
+    }
+
+    .button.secondary:hover {
+      background: #ffffff;
+      border-color: rgba(47, 111, 88, 0.35);
+    }
+
+    .hero {
+      position: relative;
+      min-height: 92vh;
+      overflow: hidden;
+      padding: clamp(7rem, 12vw, 10rem) 0 clamp(3rem, 7vw, 5rem);
+      background: var(--paper);
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      max-width: 720px;
+    }
+
+    .hero-art {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .hero-device {
+      position: absolute;
+      right: max(2rem, calc((100vw - 1180px) / 2));
+      top: clamp(7rem, 14vw, 10rem);
+      width: min(350px, 35vw);
+      min-width: 280px;
+      padding: 16px;
+      background: #10251f;
+      border-radius: 52px;
+      box-shadow: 0 35px 90px rgba(28, 69, 55, 0.26);
+      transform: rotate(2deg);
+    }
+
+    .hero-device-screen {
+      overflow: hidden;
+      min-height: 640px;
+      background: var(--paper);
+      border-radius: 38px;
+    }
+
+    .hero-device-head {
+      padding: 1.45rem;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .hero-device-head strong {
+      display: block;
+      font-size: 1.55rem;
+      line-height: 1.05;
+    }
+
+    .hero-device-head span {
+      display: inline-flex;
+      margin-top: 0.8rem;
+      padding: 0.5rem 0.72rem;
+      color: var(--green-dark);
+      font-weight: 850;
+      background: rgba(47, 111, 88, 0.12);
+      border-radius: 999px;
+    }
+
+    .hero-device-list {
+      display: grid;
+      gap: 0.8rem;
+      padding: 1rem;
+    }
+
+    .hero-device-row {
+      display: grid;
+      grid-template-columns: 32px 1fr;
+      gap: 0.78rem;
+      align-items: center;
+      padding: 0.82rem;
+      background: #ffffff;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+    }
+
+    .hero-device-title {
+      display: block;
+      font-weight: 850;
+      line-height: 1.1;
+    }
+
+    .hero-device-meta {
+      display: block;
+      margin-top: 0.25rem;
+      color: var(--muted);
+      font-size: 0.84rem;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.55rem;
+      margin: 0 0 1rem;
+      color: var(--green-dark);
+      font-size: 0.82rem;
+      font-weight: 850;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 0.65rem;
+      height: 0.65rem;
+      background: var(--amber);
+      border-radius: 50%;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin-top: 0;
+    }
+
+    h1 {
+      max-width: 700px;
+      margin-bottom: 1.2rem;
+      font-size: clamp(3.1rem, 9vw, 7.2rem);
+      line-height: 0.94;
+      letter-spacing: 0;
+    }
+
+    .hero p {
+      max-width: 660px;
+      color: var(--muted);
+      font-size: clamp(1.08rem, 2vw, 1.34rem);
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+      margin-top: 1.8rem;
+    }
+
+    .hero-note {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.7rem;
+      margin-top: 1.5rem;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 38px;
+      padding: 0 0.8rem;
+      color: var(--blue);
+      font-size: 0.92rem;
+      font-weight: 800;
+      background: rgba(231, 245, 251, 0.82);
+      border: 1px solid rgba(12, 74, 110, 0.12);
+      border-radius: 999px;
+    }
+
+    section {
+      padding: clamp(3rem, 7vw, 5.8rem) 0;
+    }
+
+    .section-head {
+      max-width: 760px;
+      margin-bottom: clamp(1.5rem, 4vw, 2.6rem);
+    }
+
+    .section-head.center {
+      margin-inline: auto;
+      text-align: center;
+    }
+
+    h2 {
+      margin-bottom: 0.85rem;
+      font-size: clamp(2.1rem, 5vw, 4.3rem);
+      line-height: 0.98;
+      letter-spacing: 0;
+    }
+
+    .section-head p {
+      color: var(--muted);
+      font-size: 1.08rem;
+    }
+
+    .problem {
+      background: #ffffff;
+    }
+
+    .problem-grid,
+    .feature-grid,
+    .steps,
+    .privacy-grid {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .problem-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .problem-card,
+    .feature,
+    .step,
+    .privacy-tile,
+    .quote {
+      padding: clamp(1.15rem, 2.5vw, 1.55rem);
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: 0 14px 45px rgba(28, 69, 55, 0.08);
+    }
+
+    .icon {
+      display: grid;
+      place-items: center;
+      width: 48px;
+      height: 48px;
+      margin-bottom: 1rem;
+      color: var(--green-dark);
+      background: var(--soft);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+    }
+
+    h3 {
+      margin-bottom: 0.45rem;
+      font-size: 1.25rem;
+      line-height: 1.18;
+      letter-spacing: 0;
+    }
+
+    .problem-card p,
+    .feature p,
+    .step p,
+    .privacy-tile p,
+    .quote p {
+      margin-bottom: 0;
+      color: var(--muted);
+    }
+
+    .product-band {
+      background: var(--soft);
+    }
+
+    .product-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
+      gap: clamp(1.5rem, 5vw, 4rem);
+      align-items: center;
+    }
+
+    .screen-stack {
+      position: relative;
+      min-height: 620px;
+    }
+
+    .phone,
+    .tablet {
+      position: absolute;
+      background: #10251f;
+      border-radius: 44px;
+      box-shadow: var(--shadow);
+    }
+
+    .phone {
+      right: 0;
+      top: 0;
+      width: min(305px, 78vw);
+      padding: 15px;
+    }
+
+    .tablet {
+      left: 0;
+      bottom: 0;
+      width: min(405px, 88vw);
+      padding: 14px;
+      border-radius: 34px;
+    }
+
+    .screen {
+      overflow: hidden;
+      background: var(--paper);
+      border-radius: 32px;
+      min-height: 560px;
+    }
+
+    .tablet .screen {
+      min-height: 330px;
+      border-radius: 24px;
+    }
+
+    .phone-head,
+    .board-head {
+      padding: 1.25rem;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .phone-head strong,
+    .board-head strong {
+      display: block;
+      font-size: 1.3rem;
+      line-height: 1.1;
+    }
+
+    .phone-head span,
+    .board-head span {
+      display: block;
+      margin-top: 0.3rem;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .screen-list {
+      display: grid;
+      gap: 0.75rem;
+      padding: 1rem;
+    }
+
+    .list-row {
+      display: grid;
+      grid-template-columns: 34px 1fr;
+      gap: 0.85rem;
+      align-items: center;
+      padding: 0.85rem;
+      background: #ffffff;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+    }
+
+    .check {
+      width: 32px;
+      height: 32px;
+      border: 3px solid #7b847f;
+      border-radius: 50%;
+    }
+
+    .check.done {
+      position: relative;
+      border-color: var(--green);
+      background: rgba(47, 111, 88, 0.1);
+    }
+
+    .check.done::after {
+      content: "";
+      position: absolute;
+      left: 8px;
+      top: 5px;
+      width: 9px;
+      height: 15px;
+      border-right: 3px solid var(--green);
+      border-bottom: 3px solid var(--green);
+      transform: rotate(40deg);
+    }
+
+    .row-title {
+      display: block;
+      font-weight: 800;
+      line-height: 1.2;
+    }
+
+    .row-meta {
+      display: block;
+      margin-top: 0.25rem;
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      padding: 0 1rem 1rem;
+    }
+
+    .chip {
+      padding: 0.45rem 0.68rem;
+      color: var(--green-dark);
+      font-size: 0.84rem;
+      font-weight: 800;
+      background: var(--soft);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+    }
+
+    .chip.active {
+      color: #ffffff;
+      background: var(--green);
+      border-color: var(--green);
+    }
+
+    .tablet-body {
+      display: grid;
+      grid-template-columns: 128px 1fr;
+      gap: 0.75rem;
+      padding: 0.9rem;
+    }
+
+    .rail,
+    .board {
+      min-height: 230px;
+      background: #ffffff;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+    }
+
+    .rail {
+      padding: 0.8rem;
+    }
+
+    .rail span {
+      display: block;
+      height: 32px;
+      margin-bottom: 0.55rem;
+      background: var(--soft);
+      border-radius: 999px;
+    }
+
+    .rail span:first-child {
+      background: rgba(47, 111, 88, 0.17);
+    }
+
+    .board {
+      padding: 0.8rem;
+    }
+
+    .board-line {
+      height: 16px;
+      margin-bottom: 0.7rem;
+      background: #e4ebe5;
+      border-radius: 999px;
+    }
+
+    .board-line.short {
+      width: 64%;
+    }
+
+    .feature-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .steps {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      counter-reset: steps;
+    }
+
+    .step {
+      counter-increment: steps;
+      position: relative;
+      padding-top: 4.2rem;
+    }
+
+    .step::before {
+      content: counter(steps);
+      position: absolute;
+      left: 1.25rem;
+      top: 1.2rem;
+      display: grid;
+      place-items: center;
+      width: 42px;
+      height: 42px;
+      color: #ffffff;
+      font-weight: 900;
+      background: var(--green);
+      border-radius: 14px;
+    }
+
+    .privacy {
+      background: #ffffff;
+    }
+
+    .privacy-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .quote {
+      max-width: 880px;
+      margin: 2rem auto 0;
+      padding: clamp(1.4rem, 4vw, 2.4rem);
+      text-align: center;
+      background:
+        linear-gradient(135deg, rgba(47, 111, 88, 0.11), rgba(255, 255, 255, 0.95)),
+        #ffffff;
+    }
+
+    .quote p {
+      color: var(--ink);
+      font-size: clamp(1.4rem, 3.5vw, 2.35rem);
+      font-weight: 850;
+      line-height: 1.12;
+    }
+
+    .quote small {
+      display: block;
+      margin-top: 0.85rem;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .faq {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+    }
+
+    details {
+      padding: 1.15rem 1.25rem;
+      background: #ffffff;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      box-shadow: 0 12px 36px rgba(28, 69, 55, 0.07);
+    }
+
+    summary {
+      min-height: 44px;
+      color: var(--ink);
+      font-weight: 850;
+      cursor: pointer;
+    }
+
+    details p {
+      margin: 0.55rem 0 0;
+      color: var(--muted);
+    }
+
+    .final {
+      color: #ffffff;
+      background: var(--green-dark);
+    }
+
+    .final-inner {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) auto;
+      gap: 1.5rem;
+      align-items: center;
+    }
+
+    .final h2,
+    .final p {
+      color: #ffffff;
+    }
+
+    .final p {
+      max-width: 660px;
+      opacity: 0.86;
+    }
+
+    .final .button {
+      color: var(--green-dark);
+      background: #ffffff;
+      border-color: #ffffff;
+    }
+
+    footer {
+      padding: 2rem 0;
+      color: var(--muted);
+      background: #ffffff;
+    }
+
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    footer a {
+      font-weight: 800;
+      color: var(--green-dark);
+      text-decoration-thickness: 1px;
+      text-underline-offset: 0.2em;
+    }
+
+    @media (max-width: 980px) {
+      .hero-art {
+        display: none;
+      }
+
+      .problem-grid,
+      .feature-grid,
+      .privacy-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .product-layout,
+      .final-inner {
+        grid-template-columns: 1fr;
+      }
+
+      .screen-stack {
+        min-height: 680px;
+      }
+
+      .tablet {
+        left: 50%;
+        transform: translateX(-50%);
+      }
+    }
+
+    @media (max-width: 720px) {
+      .nav {
+        align-items: flex-start;
+        border-radius: 28px;
+      }
+
+      .nav-actions .nav-link {
+        display: none;
+      }
+
+      .hero {
+        min-height: auto;
+      }
+
+      .hero-art {
+        display: none;
+      }
+
+      .problem-grid,
+      .feature-grid,
+      .steps,
+      .privacy-grid,
+      .faq {
+        grid-template-columns: 1fr;
+      }
+
+      .screen-stack {
+        min-height: 610px;
+      }
+
+      .phone {
+        left: 50%;
+        right: auto;
+        transform: translateX(-50%);
+      }
+
+      .tablet {
+        display: none;
+      }
+
+      .footer-inner {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .wrap {
+        width: min(100% - 1rem, 1180px);
+      }
+
+      .brand span:last-child {
+        display: none;
+      }
+
+      .button {
+        width: 100%;
+      }
+
+      .hero-actions {
+        flex-direction: column;
+      }
+
+      .phone {
+        width: calc(100vw - 3rem);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        transition: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <header class="nav-shell">
+    <nav class="nav" aria-label="PackSweep navigation">
+      <a class="brand" href="#top" aria-label="PackSweep home">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" role="img">
+            <path d="M7 7.5h10M7 12h10M7 16.5h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M5.5 4.5h13A1.5 1.5 0 0 1 20 6v12a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 18V6a1.5 1.5 0 0 1 1.5-1.5Z" stroke="currentColor" stroke-width="2"/>
+          </svg>
+        </span>
+        <span>PackSweep</span>
+      </a>
+      <div class="nav-actions">
+        <a class="nav-link" href="#features">Features</a>
+        <a class="nav-link" href="#privacy">Privacy</a>
+        <a class="button" href="#app-store">App Store</a>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main">
+    <section class="hero" id="top" aria-labelledby="hero-title">
+      <div class="hero-art" aria-hidden="true">
+        <div class="hero-device">
+          <div class="hero-device-screen">
+            <div class="hero-device-head">
+              <strong>Beach Trip</strong>
+              <span>Family 76% packed</span>
+            </div>
+            <div class="chip-row">
+              <span class="chip active">All</span>
+              <span class="chip">Family</span>
+              <span class="chip">Baby</span>
+            </div>
+            <div class="hero-device-list">
+              <div class="hero-device-row">
+                <span class="check done"></span>
+                <span><span class="hero-device-title">Sunscreen</span><span class="hero-device-meta">Family / Beach Bag</span></span>
+              </div>
+              <div class="hero-device-row">
+                <span class="check"></span>
+                <span><span class="hero-device-title">Swimsuit</span><span class="hero-device-meta">Judy / Suitcase</span></span>
+              </div>
+              <div class="hero-device-row">
+                <span class="check"></span>
+                <span><span class="hero-device-title">Diapers</span><span class="hero-device-meta">Baby / Backpack</span></span>
+              </div>
+              <div class="hero-device-row">
+                <span class="check done"></span>
+                <span><span class="hero-device-title">Beach towels</span><span class="hero-device-meta">Family / Beach Bag</span></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="wrap hero-content">
+        <p class="eyebrow">Family packing boards</p>
+        <h1 id="hero-title">Pack the trip, not the panic.</h1>
+        <p>PackSweep is the family packing app that knows a baby is not a small adult. Add each traveler's age, gender, and care needs, and the list packs itself—diapers for the baby, wallet for you, the right swimwear for everyone.</p>
+        <div class="hero-actions" id="app-store">
+          <a class="button" href="#" aria-label="PackSweep App Store link placeholder">Coming to the App Store</a>
+          <a class="button secondary" href="privacy/">Read the Privacy Policy</a>
+        </div>
+        <div class="hero-note" aria-label="Product highlights">
+          <span class="pill">Free to start</span>
+          <span class="pill">No subscription</span>
+          <span class="pill">iCloud sync</span>
+          <span class="pill">iPhone, iPad, Mac</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="problem" aria-labelledby="problem-title">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow">The packing problem</p>
+          <h2 id="problem-title">Notes are fine until everyone needs the list.</h2>
+          <p>Notes apps work for one person. Family trips need shared ownership, per-traveler logic, and a list that does not fall apart the moment someone checks off an item.</p>
+        </div>
+        <div class="problem-grid">
+          <article class="problem-card">
+            <span class="icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M5 4h14v16H5z" stroke="currentColor" stroke-width="2"/><path d="M8 8h8M8 12h8M8 16h5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            </span>
+            <h3>One list turns into five</h3>
+            <p>You start with a simple packing note. Then each child, bag, activity, and reminder needs its own little corner.</p>
+          </article>
+          <article class="problem-card">
+            <span class="icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M8 19a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM16 13a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" stroke="currentColor" stroke-width="2"/><path d="M12 19c.9-2.4 2.6-3.6 5-3.6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            </span>
+            <h3>Generic apps treat everyone the same</h3>
+            <p>Most packing apps will happily suggest a wallet for your eight-month-old and forget the diapers. A baby is not a small adult.</p>
+          </article>
+          <article class="problem-card">
+            <span class="icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M6 7h12M8 7v12h8V7M10 7V5h4v2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M10 11h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            </span>
+            <h3>Checked items disappear from view</h3>
+            <p>You finally pack the sunscreen, tap done, and now nobody else can see it was handled. Two people pack it. One person forgets.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="product-band" aria-labelledby="product-title">
+      <div class="wrap product-layout">
+        <div>
+          <p class="eyebrow">Trip board</p>
+          <h2 id="product-title">A packing list that thinks in people, bags, and real trips.</h2>
+          <p class="section-head">Pick a starter template or begin blank. Set each traveler's age band, gender, and care needs—an infant in diapers, a child who packs themselves, an adult on prescription—and PackSweep generates a starting list that fits each person.</p>
+          <div class="hero-note">
+            <span class="pill">Age-aware lists</span>
+            <span class="pill">Gender-aware items</span>
+            <span class="pill">Per-traveler care flags</span>
+            <span class="pill">Editable templates</span>
+          </div>
+        </div>
+
+        <div class="screen-stack" aria-label="PackSweep app interface preview">
+          <div class="tablet" aria-hidden="true">
+            <div class="screen">
+              <div class="board-head">
+                <strong>Lake Weekend</strong>
+                <span>iPad split view with people and bags</span>
+              </div>
+              <div class="tablet-body">
+                <div class="rail">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </div>
+                <div class="board">
+                  <div class="board-line"></div>
+                  <div class="board-line short"></div>
+                  <div class="board-line"></div>
+                  <div class="board-line short"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="phone" aria-hidden="true">
+            <div class="screen">
+              <div class="phone-head">
+                <strong>Beach Trip</strong>
+                <span>76% packed by departure</span>
+              </div>
+              <div class="chip-row">
+                <span class="chip active">All</span>
+                <span class="chip">Family</span>
+                <span class="chip">Tom</span>
+                <span class="chip">Baby</span>
+              </div>
+              <div class="screen-list">
+                <div class="list-row">
+                  <span class="check done"></span>
+                  <span><span class="row-title">Sunscreen</span><span class="row-meta">Family / Beach Bag</span></span>
+                </div>
+                <div class="list-row">
+                  <span class="check"></span>
+                  <span><span class="row-title">Swimsuit</span><span class="row-meta">Judy / Suitcase</span></span>
+                </div>
+                <div class="list-row">
+                  <span class="check"></span>
+                  <span><span class="row-title">Diapers</span><span class="row-meta">Baby / Backpack</span></span>
+                </div>
+                <div class="list-row">
+                  <span class="check done"></span>
+                  <span><span class="row-title">Beach towels</span><span class="row-meta">Family / Beach Bag</span></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="features" aria-labelledby="features-title">
+      <div class="wrap">
+        <div class="section-head center">
+          <p class="eyebrow">What it does</p>
+          <h2 id="features-title">Built for the trip you are actually taking.</h2>
+          <p>Real per-traveler logic, real templates, no subscription, no ads. Structure where you want it, edits where you need them.</p>
+        </div>
+
+        <div class="feature-grid">
+          <article class="feature">
+            <span class="icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M4 7h16M7 4v16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            </span>
+            <h3>A list that knows who's packing</h3>
+            <p>Wallets gate to teen and up. Diapers go to whoever is in diapers. Menstrual supplies go where they belong. Every item has rules; you don't have to think about them.</p>
+          </article>
+          <article class="feature">
+            <span class="icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M6 19V5h12v14M9 8h6M9 12h6M9 16h3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+            <h3>20 starter templates</h3>
+            <p>Weekend, week-long, domestic flight, international flight, road trip, beach, lake, camping, cabin, theme park, cruise, ski, day hike, business, wedding, holiday visit, ministry trip, sports tournament, hospital stay, kids overnight.</p>
+          </article>
+          <article class="feature">
+            <span class="icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M9 12l2 2 4-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 5h14v14H5z" stroke="currentColor" stroke-width="2"/></svg>
+            </span>
+            <h3>Edit the library</h3>
+            <p>Categories, bags, suggestions, and templates are all yours to adjust. Make PackSweep fit your household instead of fighting it.</p>
+          </article>
+          <article class="feature">
+            <span class="icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M12 6v6l4 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M12 22a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z" stroke="currentColor" stroke-width="2"/></svg>
+            </span>
+            <h3>Checked, not hidden</h3>
+            <p>Completed items gray out and stay visible. The list is a shared record of what's done, not a disappearing act.</p>
+          </article>
+          <article class="feature">
+            <span class="icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M7 10a4 4 0 0 1 7.7-1.4A3.8 3.8 0 1 1 16 16H8a3 3 0 0 1-1-5.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            </span>
+            <h3>Departure reminders</h3>
+            <p>Set a departure time and PackSweep schedules local reminders so the final sweep happens before the car is loaded—not after.</p>
+          </article>
+          <article class="feature">
+            <span class="icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M16 8a3 3 0 1 0-3-3 3 3 0 0 0 3 3ZM8 15a3 3 0 1 0-3-3 3 3 0 0 0 3 3ZM16 22a3 3 0 1 0-3-3 3 3 0 0 0 3 3Z" stroke="currentColor" stroke-width="2"/><path d="M10.6 13.4l2.8 3.2M13.5 6.6l-3 3.2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            </span>
+            <h3>iCloud sync, household sharing</h3>
+            <p>Trips sync across iPhone, iPad, and Apple Silicon Mac through your iCloud. Share a trip with another household member running PackSweep and pack from the same board.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="product-band" aria-labelledby="steps-title">
+      <div class="wrap">
+        <div class="section-head center">
+          <p class="eyebrow">How it works</p>
+          <h2 id="steps-title">From idea to packed bag in four calm steps.</h2>
+        </div>
+        <div class="steps">
+          <article class="step">
+            <h3>Choose a trip</h3>
+            <p>Pick a starter template or a blank trip when you already know exactly what you need.</p>
+          </article>
+          <article class="step">
+            <h3>Add people</h3>
+            <p>Set each traveler's age band, gender, and care needs. The starter list adjusts to each person automatically.</p>
+          </article>
+          <article class="step">
+            <h3>Sweep the board</h3>
+            <p>Work by person, category, or bag. Check items off while keeping the full picture visible.</p>
+          </article>
+          <article class="step">
+            <h3>Share or export</h3>
+            <p>Collaborate through iCloud sharing or export a text or PDF copy when someone needs it outside the app.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="privacy" id="privacy" aria-labelledby="privacy-title">
+      <div class="wrap">
+        <div class="section-head center">
+          <p class="eyebrow">Privacy posture</p>
+          <h2 id="privacy-title">No subscription. No ads. No PackSweep backend.</h2>
+          <p>You pay once. PackSweep is a utility, not a service that has to monetize your attention to keep the lights on.</p>
+        </div>
+        <div class="privacy-grid">
+          <article class="privacy-tile">
+            <h3>No accounts</h3>
+            <p>There is no PackSweep login or hosted profile system.</p>
+          </article>
+          <article class="privacy-tile">
+            <h3>No analytics SDKs</h3>
+            <p>The app does not include ads, analytics SDKs, or tracking SDKs.</p>
+          </article>
+          <article class="privacy-tile">
+            <h3>AI that stays on your phone</h3>
+            <p>Apple Intelligence features run on-device. Your packing data is never sent to an AI service.</p>
+          </article>
+          <article class="privacy-tile">
+            <h3>iCloud optionality</h3>
+            <p>Sync and sharing use your Apple iCloud account when enabled.</p>
+          </article>
+        </div>
+        <div class="quote">
+          <p>A packing app should help your family leave on time, not become one more thing to manage.</p>
+          <small>PackSweep is built for practical trips, reusable habits, and shared responsibility.</small>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="faq-title">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow">Questions</p>
+          <h2 id="faq-title">The useful details.</h2>
+        </div>
+        <div class="faq">
+          <details>
+            <summary>Is PackSweep a subscription?</summary>
+            <p>No. PackSweep is free to start. PackSweep Pro is a one-time 99¢ purchase—unlimited trips, Apple Intelligence trip tools, PDF export, templates, and app icons. Family Sharing included.</p>
+          </details>
+          <details>
+            <summary>Does it require a PackSweep account?</summary>
+            <p>No. The app does not use a PackSweep account system. iCloud sync and sharing use Apple services when you choose to use those features.</p>
+          </details>
+          <details>
+            <summary>Can two people work from the same packing list?</summary>
+            <p>Yes. PackSweep supports CloudKit sharing for households or shared trips when both people have the app and use iCloud.</p>
+          </details>
+          <details>
+            <summary>Can I customize the built-in lists?</summary>
+            <p>Yes. Categories, bags, items, suggestions, and reusable templates are editable so your family can keep improving the system.</p>
+          </details>
+          <details>
+            <summary>How does it really know what each traveler needs?</summary>
+            <p>Every suggestion has eligibility rules: age band, gender, and care flags (in diapers, uses bottles, takes prescription, menstruates, shaves, wears glasses, breastfeeding). Generate a Beach Trip with an infant, a teen, and two adults and each gets a different, sensible list.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section class="final" aria-labelledby="final-title">
+      <div class="wrap final-inner">
+        <div>
+          <p class="eyebrow">Ready for the next trip</p>
+          <h2 id="final-title">Make packing a shared board, not a last-minute scramble.</h2>
+          <p>Built for iPhone, iPad, and Apple Silicon Mac. Free to start, Pro is one purchase. No subscription.</p>
+        </div>
+        <a class="button" href="#app-store">Coming to the App Store</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap footer-inner">
+      <span>PackSweep. Family packing lists. Never a subscription.</span>
+      <a href="privacy/">Privacy Policy</a>
+      <a href="mailto:Support@dwayneriner.com">Support</a>
+    </div>
+  </footer>
+</body>
+</html>
